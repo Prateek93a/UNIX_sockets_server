@@ -20,7 +20,7 @@
 
 void err_n_die(const char *fmt, ...){
     fprintf(stderr, "%s", fmt);
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv){
@@ -52,27 +52,27 @@ int main(int argc, char **argv){
 
     fprintf(stdout, "server connected!\n");
 
-    // while(1){
-    bzero(sendline, MAXLINE);
-    bzero(receiveline, MAXLINE);
+    while(1){
+        bzero(sendline, MAXLINE);
+        bzero(receiveline, MAXLINE);
 
-    printf("Enter the request: ");
-    fgets(sendline, MAXLINE, stdin);
+        printf("Enter the request: ");
+        fgets(sendline, MAXLINE, stdin);
 
-    // if(strcmp(sendline, "exit") == 0){
-    //     close(sockfd);
-    //     break;
-    // }
+        if(strcmp(sendline, "exit") == 0){
+            printf("Closed the client socket.\n");
+            close(sockfd);
+            break;
+        }
 
-    if(write(sockfd, sendline, strlen(sendline)) < 0)
-        err_n_die("error writing to socket!");
+        if(write(sockfd, sendline, strlen(sendline)) < 0)
+            err_n_die("error writing to socket!");
 
-    if(read(sockfd, receiveline, MAXLINE) < 0)
-        err_n_die("error reading from socket!");
-    
-    printf("Server Replied!!! - %s\n", receiveline);
-    // close(sockfd);
-    // }
+        if(read(sockfd, receiveline, MAXLINE) < 0)
+            err_n_die("error reading from socket!");
 
-    return 0;
+        printf("Server Replied!!! - %s\n", receiveline);
+    }
+
+    exit(EXIT_SUCCESS);
 }

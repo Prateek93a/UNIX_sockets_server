@@ -12,7 +12,7 @@
 #include <errno.h>
 
 // Standard http port
-#define SERVER_PORT 3000
+#define SERVER_PORT 5555
 // Buffer size
 #define MAXLINE 4096
 // Sockaddr
@@ -73,89 +73,84 @@ void* main_thread(void *arg) {
 void handle_request(int connfd){
     char receiveline[MAXLINE+1];
 
-    // while(1){
-    if(read(connfd, receiveline, MAXLINE) < 0)
-        err_n_die("error reading from socket!");
-    
-    fprintf(stdout, "Message received!: %s", receiveline);
-    receiveline[strlen(receiveline)] = '\0';
+    while(1){
+        if(read(connfd, receiveline, MAXLINE) < 0)
+            err_n_die("error reading from socket!");
+        
+        fprintf(stdout, "Message received!: %s", receiveline);
+        // receiveline[strlen(receiveline)] = '\0';
 
-    int num1 = convert_to_int(strtok(receiveline, "+-*/"));
-    int num2 = convert_to_int(strtok(NULL, "+-*/"));
-    int result;
-    
-    if(strchr(receiveline, '+')){
-        result = num1 + num2;
-    }else if(strchr(receiveline, '-')){
-        result = num1 - num2;
-    }else if(strchr(receiveline, '*')){
-        result = num1 * num2;
-    }else{
-        result = num1 / num2;
+        // int num1 = convert_to_int(strtok(receiveline, "+-*/"));
+        // int num2 = convert_to_int(strtok(NULL, "+-*/"));
+        // int result;
+        
+        // if(strchr(receiveline, '+')){
+        //     result = num1 + num2;
+        // }else if(strchr(receiveline, '-')){
+        //     result = num1 - num2;
+        // }else if(strchr(receiveline, '*')){
+        //     result = num1 * num2;
+        // }else{
+        //     result = num1 / num2;
+        // }
+
+        // fprintf(stdout, "%d", result);
+        // fflush(stdout);
+
+        char *message = receiveline;
+        if(write(connfd, message, strlen(message)) < 0)
+            err_n_die("error writing to socket!");
     }
-
-    fprintf(stdout, "%d", result);
-    fflush(stdout);
-
-    char *message = receiveline;
-    if(write(connfd, message, strlen(message)) < 0)
-        err_n_die("error writing to socket!");
-    // }
 }
 
 int main(int argc, char **argv){
     struct sockaddr_in servaddr;
     char sendline[MAXLINE+1];
+    int listenfd;
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVER_PORT);
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    
+
+    if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        err_n_die("socket error!");
+
+    if(bind(listenfd, (SA *) &servaddr, sizeof(servaddr)) < 0)
+        err_n_die("bind error.");
+
+    if(listen(listenfd, 0) < 0)
+        err_n_die("listening failed");
+
     while(1){
         struct sockaddr_in addr;
         socklen_t addr_len;
-        int listenfd, connfd;
-
-        fprintf(stdout, "setting up socket\n");
-        fflush(stdout);
-        if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-            err_n_die("socket error!");
-
-        fprintf(stdout, "binding the socket\n");
-        fflush(stdout);
-        if(bind(listenfd, (SA *) &servaddr, sizeof(servaddr)) < 0){
-            if(errno == EADDRINUSE || errno == EADDRINUSE){
-                fprintf(stdout, "port or address already in use, trying to reconnect in 10 seconds\n");
-                fflush(stdout);
-                sleep(10);
-                continue;
-            }
-            err_n_die("bind error.");
-        }
-    
-
-        fprintf(stdout, "setting up the listener\n");
-        fflush(stdout);
-        if(listen(listenfd, 0) < 0)
-            err_n_die("listening failed");
-
-        fprintf(stdout, "socket established\n");
-        fflush(stdout);
+        int connfd;
+        // int fd[2];
+        // pipe(fd);
+  
         fprintf(stdout, "waiting for connections\n");
         fflush(stdout);
 
         connfd = accept(listenfd, (SA *) NULL, NULL);
         fprintf(stdout, "client connected.\n");
         fflush(stdout);
-        close(listenfd);
 
-        handle_request(connfd);
+        if(!fork()){
+            // new process created
+            handle_request(connfd);
+            printf("Process ended.\n");
+            exit(EXIT_SUCCESS);
+        }
         close(connfd);
-        fprintf(stdout, "client disconnected.\n");
-        fflush(stdout);
-        
-        sleep(5);
+
+
+        // write()
+
+        // handle_request(connfd);
+        // close(connfd);
+        // fprintf(stdout, "client disconnected.\n");
+        // fflush(stdout);
     }
 
     exit(0);
