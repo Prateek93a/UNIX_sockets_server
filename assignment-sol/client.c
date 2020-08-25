@@ -12,7 +12,7 @@
 
 
 // Standard http port
-#define SERVER_PORT 5555
+#define SERVER_PORT 3000
 // Buffer size
 #define MAXLINE 4096
 // Sockaddr
