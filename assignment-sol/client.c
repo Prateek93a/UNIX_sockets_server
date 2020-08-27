@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include "utility.h"
 
 
 // Standard http port
@@ -24,8 +25,7 @@ void err_n_die(const char *fmt, ...){
 }
 
 int main(int argc, char **argv){
-    int sockfd, n;
-    int sendBytes;
+    int sockfd;
     struct sockaddr_in servaddr;
     char sendline[MAXLINE+1];
     char receiveline[MAXLINE+1];
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
         if(read(sockfd, receiveline, MAXLINE) < 0)
             err_n_die("error reading from socket!");
 
-        printf("Server Replied!!! - %s\n", receiveline);
+        printf("Server Replied!!! - %d\n", *((int *)receiveline));
     }
 
     exit(EXIT_SUCCESS);

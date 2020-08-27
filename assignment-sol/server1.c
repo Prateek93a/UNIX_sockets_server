@@ -20,6 +20,7 @@
 
 void handle_request(int connfd){
     char receiveline[MAXLINE+1];
+    char sendline[MAXLINE+1];
 
     while(TRUE){
         int rsig; 
@@ -27,28 +28,9 @@ void handle_request(int connfd){
             if(rsig == 0) break;
             err_n_die("error reading from socket!");
         }
-        print_message("Message received!: %s", receiveline);
-        // receiveline[strlen(receiveline)] = '\0';
-
-        // int num1 = convert_to_int(strtok(receiveline, "+-*/"));
-        // int num2 = convert_to_int(strtok(NULL, "+-*/"));
-        // int result;
-        
-        // if(strchr(receiveline, '+')){
-        //     result = num1 + num2;
-        // }else if(strchr(receiveline, '-')){
-        //     result = num1 - num2;
-        // }else if(strchr(receiveline, '*')){
-        //     result = num1 * num2;
-        // }else{
-        //     result = num1 / num2;
-        // }
-
-        // fprintf(stdout, "%d", result);
-        // fflush(stdout);
-
-        char *message = receiveline;
-        if(write(connfd, message, strlen(message)) < 0)
+        int result = compute(receiveline);
+        sprintf(sendline, "%d", result);
+        if(write(connfd, sendline, strlen(sendline)) < 0)
             err_n_die("error writing to socket!");
     }
     close(connfd);
@@ -58,7 +40,6 @@ void handle_request(int connfd){
 
 int main(int argc, char **argv){
     struct sockaddr_in servaddr;
-    char sendline[MAXLINE+1];
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
@@ -66,12 +47,7 @@ int main(int argc, char **argv){
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     
     while(TRUE){
-        struct sockaddr_in addr;
-        socklen_t addr_len;
         int listenfd, connfd;
-
-        fprintf(stdout, "setting up socket\n");
-        fflush(stdout);
 
         if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
             err_n_die("socket error!");
