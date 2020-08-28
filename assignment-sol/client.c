@@ -11,13 +11,10 @@
 #include <errno.h>
 #include "utility.h"
 
-
-// Standard http port
 #define SERVER_PORT 3000
-// Buffer size
 #define MAXLINE 4096
-// Sockaddr
 #define SA struct sockaddr
+#define TRUE 1
 
 int main(int argc, char **argv){
     int sockfd;
@@ -47,7 +44,7 @@ int main(int argc, char **argv){
 
     print_message("server connected!\n");
 
-    while(1){
+    while(TRUE){
         bzero(sendline, MAXLINE);
         bzero(receiveline, MAXLINE);
 
@@ -55,7 +52,7 @@ int main(int argc, char **argv){
         scanf("%s", sendline);
 
         if(strcmp(sendline, "exit") == 0){
-            printf("Closed the client socket.\n");
+            print_message("Closed the client socket.\n");
             close(sockfd);
             break;
         }
