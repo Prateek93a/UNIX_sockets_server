@@ -41,7 +41,6 @@ void handle_request(int connfd){
 
 int main(int argc, char **argv){
     struct sockaddr_in servaddr;
-    char sendline[MAXLINE+1];
     int listenfd;
 
     bzero(&servaddr, sizeof(servaddr));
