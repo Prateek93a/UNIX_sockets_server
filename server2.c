@@ -26,13 +26,13 @@ void handle_request(int connfd){
         int rsig; 
         if((rsig = read(connfd, receiveline, MAXLINE)) <= 0){
             if(rsig == 0) break;
-            err_n_die("error reading from socket!");
+            handle_error("error reading from socket!");
         }
         print_message("message received\n");
         int result = compute(receiveline);
         sprintf(sendline, "%d", result);
         if(write(connfd, sendline, strlen(sendline)) < 0)
-            err_n_die("error writing to socket!");
+            handle_error("error writing to socket!");
         print_message("response sent\n");
     }
     close(connfd);
@@ -49,13 +49,13 @@ int main(int argc, char **argv){
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-        err_n_die("socket error!");
+        handle_error("socket error!");
 
     if(bind(listenfd, (SA *) &servaddr, sizeof(servaddr)) < 0)
-        err_n_die("bind error.");
+        handle_error("bind error.");
 
     if(listen(listenfd, MAX_CONNECTIONS) < 0)
-        err_n_die("listening failed");
+        handle_error("listening failed");
 
     while(TRUE){
         int connfd;

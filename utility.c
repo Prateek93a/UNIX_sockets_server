@@ -9,20 +9,9 @@ void print_message(const char *fmt, ...){
     fflush(stdout);
 }
 
-void err_n_die(const char *fmt, ...){
+void handle_error(const char *fmt, ...){
     print_message(fmt);
     exit(EXIT_FAILURE);
-}
-
-int convert_to_int(char *num){
-    char *local_num = num;
-    int res = 0;
-    while(local_num){
-        res += *local_num -'0';
-        res *= 10;
-        local_num++;
-    }
-    return res;
 }
 
 int max(int v1, int v2){

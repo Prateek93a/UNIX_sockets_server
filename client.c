@@ -23,23 +23,23 @@ int main(int argc, char **argv){
     char receiveline[MAXLINE+1];
 
     if(argc != 2)
-        err_n_die("usage: %s <server address>", argv[0]);
+        handle_error("usage: %s <server address>", argv[0]);
 
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-        err_n_die("error while creating a socket!");
+        handle_error("error while creating a socket!");
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVER_PORT);
 
     if(inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0)
-        err_n_die("inet_pton error for %s", argv[1]);
+        handle_error("inet_pton error for %s", argv[1]);
 
     if(connect(sockfd, (SA *) &servaddr, sizeof(servaddr)) < 0){
         if(errno == ECONNREFUSED)
-            err_n_die("Connection busy!");
+            handle_error("Connection busy!");
         else
-            err_n_die("connect failed!");
+            handle_error("connect failed!");
     }
 
     print_message("server connected!\n");
@@ -58,10 +58,10 @@ int main(int argc, char **argv){
         }
 
         if(write(sockfd, sendline, strlen(sendline)) < 0)
-            err_n_die("error writing to socket!");
+            handle_error("error writing to socket!");
 
         if(read(sockfd, receiveline, MAXLINE) < 0)
-            err_n_die("error reading from socket!");
+            handle_error("error reading from socket!");
 
         printf("Server Replied: %s\n", receiveline);
         fflush(stdin);
