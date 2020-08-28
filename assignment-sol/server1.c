@@ -28,10 +28,12 @@ void handle_request(int connfd){
             if(rsig == 0) break;
             err_n_die("error reading from socket!");
         }
+        print_message("message received\n");
         int result = compute(receiveline);
         sprintf(sendline, "%d", result);
         if(write(connfd, sendline, strlen(sendline)) < 0)
             err_n_die("error writing to socket!");
+        print_message("response sent\n");
     }
     close(connfd);
     print_message("client disconnected.\n");

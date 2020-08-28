@@ -29,19 +29,20 @@ int max(int v1, int v2){
     return v1 > v2 ? v1 : v2;
 }
 
-int compute(char *input){
-    int num1 = 0, num2 = 0, num_to_calc = 1;
+int compute(char *input){  
     char *operators = "+-/*";
     char operator;
     for(int i = 0; i < strlen(input); i++){
         if(strchr(operators, input[i])){
             operator = input[i];
-            num_to_calc = 2;
-            continue;
+            break;
         }
-        if(num_to_calc == 1) num1 = num1*10 + (input[i]-'0');
-        else num2 = num2*10 + (input[i]-'0');
     }
+    int num1 = 0, num2 = 0;
+    char *ptr = strtok(input, "*+-/");
+    num1 = atoi(ptr);
+	ptr = strtok(NULL, "*+-/");
+    num2 = atoi(ptr);
     switch (operator){
         case '+':
             return num1+num2;

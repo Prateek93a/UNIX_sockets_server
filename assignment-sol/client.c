@@ -19,11 +19,6 @@
 // Sockaddr
 #define SA struct sockaddr
 
-void err_n_die(const char *fmt, ...){
-    fprintf(stderr, "%s", fmt);
-    exit(EXIT_FAILURE);
-}
-
 int main(int argc, char **argv){
     int sockfd;
     struct sockaddr_in servaddr;
@@ -50,14 +45,14 @@ int main(int argc, char **argv){
             err_n_die("connect failed!");
     }
 
-    fprintf(stdout, "server connected!\n");
+    print_message("server connected!\n");
 
     while(1){
         bzero(sendline, MAXLINE);
         bzero(receiveline, MAXLINE);
 
-        printf("Enter the request: ");
-        fgets(sendline, MAXLINE, stdin);
+        print_message("Enter the request: ");
+        scanf("%s", sendline);
 
         if(strcmp(sendline, "exit") == 0){
             printf("Closed the client socket.\n");
@@ -71,7 +66,8 @@ int main(int argc, char **argv){
         if(read(sockfd, receiveline, MAXLINE) < 0)
             err_n_die("error reading from socket!");
 
-        printf("Server Replied!!! - %d\n", *((int *)receiveline));
+        printf("Server Replied: %s\n", receiveline);
+        fflush(stdin);
     }
 
     exit(EXIT_SUCCESS);
