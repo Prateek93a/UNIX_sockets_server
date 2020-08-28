@@ -18,6 +18,27 @@
 #define MAX_CONNECTIONS 10
 #define TRUE 1
 
+void handle_request(int connfd){
+    char receiveline[MAXLINE+1];
+    char sendline[MAXLINE+1];
+
+    while(TRUE){
+        int rsig; 
+        if((rsig = read(connfd, receiveline, MAXLINE)) <= 0){
+            if(rsig == 0) break;
+            err_n_die("error reading from socket!");
+        }
+        print_message("message received\n");
+        int result = compute(receiveline);
+        sprintf(sendline, "%d", result);
+        if(write(connfd, sendline, strlen(sendline)) < 0)
+            err_n_die("error writing to socket!");
+        print_message("response sent\n");
+    }
+    close(connfd);
+    print_message("client disconnected.\n");
+}
+
 int main(int argc, char **argv){
     struct sockaddr_in servaddr;
     char sendline[MAXLINE+1];

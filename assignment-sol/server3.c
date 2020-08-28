@@ -22,6 +22,7 @@
 
 void handle_request(int connfd, fd_set* current_sockets){
     char receiveline[MAXLINE+1];
+    char sendline[MAXLINE+1];
     int rsig; 
     if((rsig = read(connfd, receiveline, MAXLINE)) <= 0){
         if(rsig == 0){
@@ -32,16 +33,17 @@ void handle_request(int connfd, fd_set* current_sockets){
         }
         err_n_die("error reading from socket!");
     }
-    fprintf(stdout, "Message received!: %s", receiveline);
-    char *message = receiveline;
-    if(write(connfd, message, strlen(message)) < 0)
+    print_message("message received\n");
+    int result = compute(receiveline);
+    sprintf(sendline, "%d", result);
+    if(write(connfd, sendline, strlen(sendline)) < 0)
         err_n_die("error writing to socket!");
+    print_message("response sent\n");
 }
 
 
 int main(int argc, char **argv){
     struct sockaddr_in servaddr;
-    char sendline[MAXLINE+1];
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
