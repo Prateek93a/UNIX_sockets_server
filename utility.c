@@ -30,7 +30,7 @@ int compute(char *input){
     int num1 = 0, num2 = 0;
     char *ptr = strtok(input, "*+-/");
     num1 = atoi(ptr);
-	ptr = strtok(NULL, "*+-/");
+    ptr = strtok(NULL, "*+-/");
     num2 = atoi(ptr);
     switch (operator){
         case '+':
