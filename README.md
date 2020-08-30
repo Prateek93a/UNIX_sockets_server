@@ -1,7 +1,7 @@
 # 3 implementations of simple maths server using UNIX socket programming
-The repository contains three different implementations for simple maths server. It also contains client side code. The function of the servers is to respond to the basic maths queries of the client. 
-Sample query : `3+5`
-Sample response : `8`
+The repository contains three different implementations for simple maths server. It also contains client side code. The function of the servers is to respond to the basic maths queries of the client.  
+Sample query : `3+5`  
+Sample response : `8`  
 The purpose the project was to learn connection oriented UNIX socket programming.
 
 ## Server 1
