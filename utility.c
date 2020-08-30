@@ -28,9 +28,9 @@ int compute(char *input){
         }
     }
     int num1 = 0, num2 = 0;
-    char *ptr = strtok(input, "*+-/");
+    char *ptr = strtok(input, operators);
     num1 = atoi(ptr);
-    ptr = strtok(NULL, "*+-/");
+    ptr = strtok(NULL, operators);
     num2 = atoi(ptr);
     switch (operator){
         case '+':
