@@ -17,3 +17,9 @@ This is a single process server that can handle requests from a multiple clients
 ## Client
 This is a generic client side program. The client connects to the server and executes an infinite loop. Inside the loop, it takes input from the user, sends the input to the server and waits for the response. On receiving response it prints out the results.
  
+## Running locally
+Execute the following instructions. You can setup any of the server using the same steps.
+ - `make server1`
+ - `make client`
+ - `./server1.o`
+ - `./client.o 127.0.0.1` (in a separate terminal instance)
