@@ -5,7 +5,7 @@
 #include <errno.h>
 
 void print_message(const char *fmt, ...){
-    fprintf(stderr, "%s\n", fmt);
+    fprintf(stdout, "%s\n", fmt);
     fflush(stdout);
 }
 
