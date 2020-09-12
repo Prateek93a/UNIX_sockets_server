@@ -64,7 +64,7 @@ int main(int argc, char **argv){
             handle_error("error reading from socket!");
 
         printf("Server Replied: %s\n", receiveline);
-        fflush(stdin);
+        fflush(stdout);
     }
 
     exit(EXIT_SUCCESS);
