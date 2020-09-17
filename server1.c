@@ -55,7 +55,7 @@ int main(int argc, char **argv){
             handle_error("socket error!");
 
         if(bind(listenfd, (SA *) &servaddr, sizeof(servaddr)) < 0){
-            if(errno == EADDRINUSE || errno == EADDRINUSE){
+            if(errno == EADDRINUSE){
                 print_message("port or address already in use, trying to reconnect in 10 seconds\n");
                 sleep(10);
                 continue;
